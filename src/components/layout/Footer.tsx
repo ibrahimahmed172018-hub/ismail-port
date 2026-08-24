@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ArrowUp, Sparkles, ArrowUpRight } from "lucide-react";
+import { ArrowUp, Sparkles, ArrowUpRight, Code2 } from "lucide-react";
 import { ISMAIL_DATA } from "@/data/portfolio";
 
 export function Footer() {
@@ -26,7 +26,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-2 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-950 flex items-center justify-center font-black text-white text-base border border-red-500/40">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-950 flex items-center justify-center font-black text-white text-base border border-red-500/40 shadow-lg shadow-red-600/20">
                 IM
               </div>
               <div>
@@ -66,13 +66,23 @@ export function Footer() {
           </button>
         </div>
 
-        {/* Bottom copyright */}
-        <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+        {/* Bottom copyright & Developer Credit */}
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
           <div>
-            © {new Date().getFullYear()} {ISMAIL_DATA.personal.name}. All rights reserved.
+            © {new Date().getFullYear()} <span className="font-bold text-white">{ISMAIL_DATA.personal.name}</span>. All rights reserved.
           </div>
-          <div className="flex items-center space-x-1">
-            <span>Retina Creative Agency • High-Impact Brand Direction</span>
+
+          {/* Developed by Ebrahim Ahmed */}
+          <div className="flex items-center space-x-2 text-zinc-400 bg-zinc-950/80 px-4 py-1.5 rounded-full border border-white/10 shadow-sm">
+            <Code2 className="w-3.5 h-3.5 text-red-500" />
+            <span>Developed by</span>
+            <span className="font-bold text-white bg-gradient-to-r from-red-500 to-rose-400 bg-clip-text text-transparent">
+              Ebrahim Ahmed
+            </span>
+          </div>
+
+          <div className="flex items-center space-x-1 text-zinc-500">
+            <span>Retina Creative Agency</span>
           </div>
         </div>
       </div>
