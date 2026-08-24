@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Paintbrush, ArrowUpRight, MessageSquare, Maximize2, X, FileText, Download, BookOpen, Eye } from "lucide-react";
+import { Sparkles, Paintbrush, ArrowUpRight, MessageSquare, Maximize2, X, FileText, Download, BookOpen, Eye, ChevronDown } from "lucide-react";
 import { ISMAIL_DATA, CategoryPortfolio } from "@/data/portfolio";
 import { BrushDustRevealImage } from "@/components/interactive/BrushDustRevealImage";
 import { PdfViewerModal } from "@/components/interactive/PdfViewerModal";
@@ -13,12 +13,14 @@ export function GallerySection() {
   const [wipeTrigger, setWipeTrigger] = useState<number>(0);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [isPdfOpen, setIsPdfOpen] = useState<boolean>(false);
+  const [visibleCount, setVisibleCount] = useState<number>(12);
 
   const activeCategory: CategoryPortfolio =
     ISMAIL_DATA.categories.find((c) => c.key === selectedKey) || ISMAIL_DATA.categories[0];
 
   const handleCategorySelect = (key: string) => {
     setSelectedKey(key);
+    setVisibleCount(12);
     setWipeTrigger((prev) => prev + 1);
   };
 
@@ -27,6 +29,8 @@ export function GallerySection() {
   };
 
   const whatsappInquiryUrl = `https://wa.me/201009341107?text=${encodeURIComponent(activeCategory.message)}`;
+  const displayedImages = activeCategory.images.slice(0, visibleCount);
+  const hasMore = visibleCount < activeCategory.images.length;
 
   return (
     <section id="works" className="py-24 px-4 sm:px-6 lg:px-8 relative bg-transparent text-white overflow-hidden">
@@ -76,7 +80,7 @@ export function GallerySection() {
               >
                 <span className="text-sm font-black">{cat.title}</span>
                 <span className={`text-[11px] font-medium ${isActive ? "text-red-100" : "text-zinc-500"}`}>
-                  {cat.titleAr} ({cat.images.length} تصاميم + ملف PDF)
+                  {cat.titleAr} ({cat.images.length} تصاميم)
                 </span>
               </button>
             );
@@ -122,12 +126,12 @@ export function GallerySection() {
           </div>
         </div>
 
-        {/* Masonry Gallery with Brush Dust Reveal & Featured PDF Card */}
+        {/* Masonry Gallery with Progressive Display */}
         <motion.div
           key={`${selectedKey}-${wipeTrigger}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.3 }}
           className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5"
         >
           {/* 1. Featured Interactive PDF Document Card */}
@@ -173,19 +177,18 @@ export function GallerySection() {
           )}
 
           {/* 2. Gallery Image Cards */}
-          {activeCategory.images.map((imgUrl, index) => (
+          {displayedImages.map((imgUrl, index) => (
             <div
               key={`${imgUrl}-${index}`}
               onClick={() => setLightboxImage(imgUrl)}
               className="break-inside-avoid group relative rounded-2xl overflow-hidden border border-white/10 hover:border-red-500/60 bg-zinc-950 shadow-xl cursor-pointer transition-all duration-500 hover:shadow-[0_0_35px_rgba(220,38,38,0.3)]"
             >
-              {/* Brush Dust Image Component */}
               <div className="relative w-full aspect-[4/3] sm:aspect-auto min-h-[260px] bg-black">
                 <BrushDustRevealImage
                   src={imgUrl}
                   alt={`${activeCategory.title} piece ${index + 1}`}
                   className="w-full h-auto min-h-[260px]"
-                  delay={(index % 6) * 0.1}
+                  delay={(index % 4) * 0.08}
                   triggerKey={`${selectedKey}-${wipeTrigger}`}
                 />
 
@@ -204,6 +207,19 @@ export function GallerySection() {
             </div>
           ))}
         </motion.div>
+
+        {/* Load More Button if category has more than 12 images */}
+        {hasMore && (
+          <div className="flex justify-center pt-6">
+            <button
+              onClick={() => setVisibleCount((prev) => prev + 12)}
+              className="px-8 py-4 rounded-full bg-zinc-900 hover:bg-red-600 border border-white/15 hover:border-red-500 text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center space-x-2 shadow-xl hover:shadow-red-600/30 hover:scale-105"
+            >
+              <span>عرض المزيد من الأعمال ({activeCategory.images.length - visibleCount} تصاميم إضافية)</span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Fullscreen High-Res Image Lightbox Modal */}
@@ -284,7 +300,7 @@ export function GallerySection() {
       <PdfViewerModal
         isOpen={isPdfOpen}
         onClose={() => setIsPdfOpen(false)}
-        pdfUrl="/branding-identity/Logo Design Process.pdf"
+        pdfUrl={`${activeCategory.pdfAttachment}`}
         title="Logo Design Process Guide"
         subtitle="دليل ومنهجية بناء الشعار والهوية البصرية — إسماعيل محمد"
       />
