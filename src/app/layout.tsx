@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ismail-portfolio.vercel.app"),
+  metadataBase: new URL("https://ismailmohamed.vercel.app"),
   title: `${ISMAIL_DATA.personal.name} — ${ISMAIL_DATA.personal.jobTitle}`,
   description: ISMAIL_DATA.personal.bio,
   keywords: [
