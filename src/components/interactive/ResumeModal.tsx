@@ -40,10 +40,13 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
     };
   }, [isOpen, onClose]);
 
+  const cvFileUrl = ISMAIL_DATA.personal.cvUrl || "/cv.pdf";
+
   const handleDownload = () => {
     const link = document.createElement("a");
-    link.href = "/Esmail_Mohammed_Abdeldaim_Global_CV.pdf";
+    link.href = cvFileUrl;
     link.download = "Esmail_Mohammed_Abdeldaim_Global_CV.pdf";
+    link.target = "_blank";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -102,7 +105,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 </button>
 
                 <a
-                  href="/Esmail_Mohammed_Abdeldaim_Global_CV.pdf"
+                  href={cvFileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition"

@@ -1,3 +1,6 @@
+export const SUPABASE_STORAGE_BASE =
+  "https://hfsjztcdyxmnuuufsdzi.supabase.co/storage/v1/object/public/ismail-portfolio";
+
 export interface ProjectItem {
   id: string;
   title: string;
@@ -28,8 +31,9 @@ export const ISMAIL_DATA = {
     shortName: "Ismail Mohamed",
     nameAr: "إسماعيل محمد",
     cvFullName: "Esmail Mohammed Abdeldaim",
-    heroImage: "/ismail_hero.jpg",
-    avatar: "/ismail_hero.jpg",
+    heroImage: `${SUPABASE_STORAGE_BASE}/ismail_hero.jpg`,
+    avatar: `${SUPABASE_STORAGE_BASE}/ismail_hero.jpg`,
+    cvUrl: `${SUPABASE_STORAGE_BASE}/cv.pdf`,
     jobTitle: "Senior Graphic Designer | Multimedia & Creative Designer | Video Editor",
     secondaryTitle: "Digital Marketing Specialist • Founder & Creative Director",
     agency: "Retina Creative Agency",
@@ -86,7 +90,7 @@ export const ISMAIL_DATA = {
     }
   ],
 
-  // Real Service Categories & Galleries
+  // Real Service Categories & Galleries from Supabase Storage CDN
   categories: [
     {
       key: "branding-identity",
@@ -96,16 +100,16 @@ export const ISMAIL_DATA = {
       desc: "هويات بصرية كاملة، تصميم شعارات دقيقة هندسياً، أدلة استخدام العلامة التجارية، وتطبيقات المطبوعات والتغليف الفاخرة.",
       message: "مرحباً إسماعيل، أنا مهتم بخدمة تصميم الهوية البصرية والشعارات (Branding & Identity) وأود مناقشة تفاصيل مشروع معكم.",
       icon: "Layers",
-      pdfAttachment: "/branding-identity/Logo Design Process.pdf",
+      pdfAttachment: `${SUPABASE_STORAGE_BASE}/branding-identity/Logo%20Design%20Process.pdf`,
       images: [
-        "/branding-identity/cover.jpg",
-        "/branding-identity/identity-showcase.jpg",
-        "/branding-identity/8.jpg",
-        "/branding-identity/456.jpg",
-        "/branding-identity/54615.jpg",
-        "/branding-identity/556.jpg",
-        "/branding-identity/profile-identity.jpg",
-        "/branding-identity/brand-concept.png"
+        `${SUPABASE_STORAGE_BASE}/branding-identity/cover.jpg`,
+        `${SUPABASE_STORAGE_BASE}/branding-identity/identity-showcase.jpg`,
+        `${SUPABASE_STORAGE_BASE}/branding-identity/8.jpg`,
+        `${SUPABASE_STORAGE_BASE}/branding-identity/456.jpg`,
+        `${SUPABASE_STORAGE_BASE}/branding-identity/54615.jpg`,
+        `${SUPABASE_STORAGE_BASE}/branding-identity/556.jpg`,
+        `${SUPABASE_STORAGE_BASE}/branding-identity/profile-identity.jpg`,
+        `${SUPABASE_STORAGE_BASE}/branding-identity/brand-concept.png`
       ]
     },
     {
@@ -116,31 +120,10 @@ export const ISMAIL_DATA = {
       desc: "تصاميم سوشيال ميديا وبوسترات إعلانية مبتكرة تجبر العميل على التوقف والتفاعل، صُممت بحسابات بصرية دقيقة وإضاءة احترافية.",
       message: "مرحباً إسماعيل، أنا مهتم بخدمة تصاميم وبوستات السوشيال ميديا (Social Media Designs) وأود مناقشة تفاصيل حملة إعلانية معكم.",
       icon: "TrendingUp",
-      images: [
-        "/social-media-designs/social-01.jpg",
-        "/social-media-designs/social-02.jpg",
-        "/social-media-designs/social-03.jpg",
-        "/social-media-designs/social-04.jpg",
-        "/social-media-designs/social-05.jpg",
-        "/social-media-designs/social-06.jpg",
-        "/social-media-designs/social-07.jpg",
-        "/social-media-designs/social-08.jpg",
-        "/social-media-designs/social-09.jpg",
-        "/social-media-designs/social-10.jpg",
-        "/social-media-designs/social-11.jpg",
-        "/social-media-designs/social-12.jpg",
-        "/social-media-designs/social-13.jpg",
-        "/social-media-designs/social-14.jpg",
-        "/social-media-designs/social-15.jpg",
-        "/social-media-designs/social-16.jpg",
-        "/social-media-designs/social-17.jpg",
-        "/social-media-designs/social-18.jpg",
-        "/social-media-designs/social-19.jpg",
-        "/social-media-designs/social-20.jpg",
-        "/social-media-designs/social-21.jpg",
-        "/social-media-designs/social-22.jpg",
-        "/social-media-designs/social-23.jpg"
-      ]
+      images: Array.from({ length: 23 }, (_, i) => {
+        const num = (i + 1).toString().padStart(2, "0");
+        return `${SUPABASE_STORAGE_BASE}/social-media-designs/social-${num}.jpg`;
+      })
     },
     {
       key: "packaging-print",
@@ -150,49 +133,10 @@ export const ISMAIL_DATA = {
       desc: "تصاميم علب المنتجات، التغليف الفاخر، البروشورات، الفلايرات، والملصقات المجهزة بالكامل للمطابع بأعلى معايير الدقة والـ CMYK.",
       message: "مرحباً إسماعيل، أنا مهتم بخدمة تصميم المطبوعات والتغليف (Packaging & Print) وأود مناقشة تفاصيل مشروع معكم.",
       icon: "Package",
-      images: [
-        "/packaging-print/print-01.jpg",
-        "/packaging-print/print-02.jpg",
-        "/packaging-print/print-03.jpg",
-        "/packaging-print/print-04.jpg",
-        "/packaging-print/print-05.jpg",
-        "/packaging-print/print-06.jpg",
-        "/packaging-print/print-07.jpg",
-        "/packaging-print/print-08.jpg",
-        "/packaging-print/print-09.jpg",
-        "/packaging-print/print-10.jpg",
-        "/packaging-print/print-11.jpg",
-        "/packaging-print/print-12.jpg",
-        "/packaging-print/print-13.jpg",
-        "/packaging-print/print-14.jpg",
-        "/packaging-print/print-15.jpg",
-        "/packaging-print/print-16.jpg",
-        "/packaging-print/print-17.jpg",
-        "/packaging-print/print-18.jpg",
-        "/packaging-print/print-19.jpg",
-        "/packaging-print/print-20.jpg",
-        "/packaging-print/print-21.jpg",
-        "/packaging-print/print-22.jpg",
-        "/packaging-print/print-23.jpg",
-        "/packaging-print/print-24.jpg",
-        "/packaging-print/print-25.jpg",
-        "/packaging-print/print-26.jpg",
-        "/packaging-print/print-27.jpg",
-        "/packaging-print/print-28.jpg",
-        "/packaging-print/print-29.jpg",
-        "/packaging-print/print-30.jpg",
-        "/packaging-print/print-31.jpg",
-        "/packaging-print/print-32.jpg",
-        "/packaging-print/print-33.jpg",
-        "/packaging-print/print-34.jpg",
-        "/packaging-print/print-35.jpg",
-        "/packaging-print/print-36.jpg",
-        "/packaging-print/print-37.jpg",
-        "/packaging-print/print-38.jpg",
-        "/packaging-print/print-39.jpg",
-        "/packaging-print/print-40.jpg",
-        "/packaging-print/print-41.jpg"
-      ]
+      images: Array.from({ length: 41 }, (_, i) => {
+        const num = (i + 1).toString().padStart(2, "0");
+        return `${SUPABASE_STORAGE_BASE}/packaging-print/print-${num}.jpg`;
+      })
     }
   ] as CategoryPortfolio[],
 

@@ -3,6 +3,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { ISMAIL_DATA } from "@/data/portfolio";
 
 export function HeroInteractivePhoto() {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -63,9 +64,9 @@ export function HeroInteractivePhoto() {
         }}
         className="relative w-full max-w-[620px] aspect-[4/3] sm:aspect-[16/11] md:aspect-[16/10] rounded-3xl overflow-hidden border-2 border-red-500/40 shadow-[0_0_60px_rgba(220,38,38,0.35)] bg-black cursor-pointer group"
       >
-        {/* The Clean Hero Photo directly from Ismail */}
+        {/* The Clean Hero Photo directly from Supabase CDN */}
         <Image
-          src="/ismail_hero.jpg"
+          src={ISMAIL_DATA.personal.heroImage}
           alt="Ismail Mohamed - Let's Create Something Great"
           fill
           className="object-cover object-center scale-100 group-hover:scale-103 transition-transform duration-700 select-none pointer-events-none"
