@@ -17,6 +17,7 @@ export function CreativeStudioBackground() {
     let animationFrameId: number;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
+    const isMobile = width < 768;
 
     let isVisible = true;
     const handleVisibilityChange = () => {
@@ -55,11 +56,11 @@ export function CreativeStudioBackground() {
     window.addEventListener("touchmove", handleTouchMove, { passive: true });
 
     // 1. Primary Bezier Curve (Upper)
-    const curve1NodesCount = 5;
+    const curve1NodesCount = isMobile ? 4 : 5;
     const curve1 = Array.from({ length: curve1NodesCount }, (_, i) => ({
       x: (width / (curve1NodesCount - 1)) * i,
-      y: height * 0.25,
-      targetY: height * 0.25,
+      y: height * 0.3,
+      targetY: height * 0.3,
       angle: i * 0.8,
       speed: 0.012 + i * 0.003,
       h1x: 0,
@@ -68,12 +69,12 @@ export function CreativeStudioBackground() {
       h2y: 0
     }));
 
-    // 2. Secondary Bezier Curve (Lower)
-    const curve2NodesCount = 5;
+    // 2. Secondary Bezier Curve (Lower - desktop only)
+    const curve2NodesCount = 4;
     const curve2 = Array.from({ length: curve2NodesCount }, (_, i) => ({
       x: (width / (curve2NodesCount - 1)) * i,
-      y: height * 0.72,
-      targetY: height * 0.72,
+      y: height * 0.75,
+      targetY: height * 0.75,
       angle: i * 1.1 + Math.PI,
       speed: 0.014 + i * 0.002,
       h1x: 0,
@@ -82,21 +83,23 @@ export function CreativeStudioBackground() {
       h2y: 0
     }));
 
-    // 3. Fluid Brush Ribbons
-    const ribbons = [
-      { color: "rgba(239, 68, 68, 0.4)", width: 3.5, speed: 0.002, amp: 100, yRatio: 0.38 },
-      { color: "rgba(220, 38, 38, 0.3)", width: 2, speed: 0.0025, amp: 80, yRatio: 0.52 },
-      { color: "rgba(255, 255, 255, 0.15)", width: 1.2, speed: 0.0015, amp: 110, yRatio: 0.68 }
-    ];
+    // 3. Fluid Brush Ribbons (1 on mobile, 3 on desktop)
+    const ribbons = isMobile
+      ? [{ color: "rgba(239, 68, 68, 0.35)", width: 2.5, speed: 0.002, amp: 60, yRatio: 0.45 }]
+      : [
+          { color: "rgba(239, 68, 68, 0.4)", width: 3.5, speed: 0.002, amp: 100, yRatio: 0.38 },
+          { color: "rgba(220, 38, 38, 0.3)", width: 2, speed: 0.0025, amp: 80, yRatio: 0.52 },
+          { color: "rgba(255, 255, 255, 0.15)", width: 1.2, speed: 0.0015, amp: 110, yRatio: 0.68 }
+        ];
 
-    // 4. Floating Ink Particles (Optimized count: 20)
-    const inkDroplets = Array.from({ length: 20 }, () => ({
+    // 4. Floating Particles (8 on mobile, 20 on desktop)
+    const inkDroplets = Array.from({ length: isMobile ? 8 : 20 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: 1.5 + Math.random() * 2.5,
-      alpha: 0.3 + Math.random() * 0.5,
-      vy: -0.3 - Math.random() * 0.5,
-      vx: (Math.random() - 0.5) * 0.3
+      size: 1.5 + Math.random() * 2,
+      alpha: 0.3 + Math.random() * 0.4,
+      vy: -0.3 - Math.random() * 0.4,
+      vx: (Math.random() - 0.5) * 0.2
     }));
 
     let time = 0;
@@ -106,9 +109,8 @@ export function CreativeStudioBackground() {
       animationFrameId = requestAnimationFrame(render);
       if (!isVisible) return;
 
-      // Target 60 FPS frame limiting
       const delta = now - lastTime;
-      if (delta < 15) return;
+      if (delta < (isMobile ? 22 : 15)) return; // 45 FPS on mobile to save CPU/battery, 60 FPS on desktop
       lastTime = now;
 
       time += 1;
@@ -122,16 +124,17 @@ export function CreativeStudioBackground() {
         ctx.lineCap = "round";
 
         const baseY = height * ribbon.yRatio;
+        const step = isMobile ? 40 : 25;
 
-        for (let x = 0; x <= width; x += 25) {
+        for (let x = 0; x <= width; x += step) {
           const wave = Math.sin(x * 0.0025 + time * ribbon.speed) * ribbon.amp;
           const secondaryWave = Math.cos(x * 0.0012 - time * ribbon.speed * 0.8) * (ribbon.amp * 0.4);
 
           let mouseAttract = 0;
           if (isInteracting) {
             const dist = Math.abs(x - mouseX);
-            if (dist < 300) {
-              mouseAttract = (1 - dist / 300) * (mouseY - baseY) * 0.18;
+            if (dist < 250) {
+              mouseAttract = (1 - dist / 250) * (mouseY - baseY) * 0.15;
             }
           }
 
@@ -142,15 +145,15 @@ export function CreativeStudioBackground() {
         ctx.stroke();
       });
 
-      // --- B. Draw Live Bezier Pen Tool Splines ---
+      // --- B. Draw Live Bezier Pen Splines ---
       const drawBezierCurve = (nodesList: typeof curve1, isLead = true) => {
         for (let i = 0; i < nodesList.length; i++) {
           const node = nodesList[i];
           node.angle += node.speed;
-          node.y = node.targetY + Math.sin(node.angle) * (height * 0.16);
-          node.x = (width / (nodesList.length - 1)) * i + Math.cos(node.angle * 0.8) * 30;
+          node.y = node.targetY + Math.sin(node.angle) * (height * 0.14);
+          node.x = (width / (nodesList.length - 1)) * i + Math.cos(node.angle * 0.8) * 25;
 
-          const handleLength = 75 + Math.sin(time * 0.02 + i) * 20;
+          const handleLength = (isMobile ? 50 : 75) + Math.sin(time * 0.02 + i) * 15;
           const handleAngle = node.angle + Math.PI / 4;
           node.h1x = node.x - Math.cos(handleAngle) * handleLength;
           node.h1y = node.y - Math.sin(handleAngle) * handleLength;
@@ -158,7 +161,6 @@ export function CreativeStudioBackground() {
           node.h2y = node.y + Math.sin(handleAngle) * handleLength;
         }
 
-        // Draw Spline
         ctx.beginPath();
         ctx.strokeStyle = isLead ? "#ef4444" : "rgba(239, 68, 68, 0.7)";
         ctx.lineWidth = isLead ? 2.5 : 1.8;
@@ -170,13 +172,12 @@ export function CreativeStudioBackground() {
         }
         ctx.stroke();
 
-        // Draw Handles & Points
+        // Direction Handles & Anchor Knots
         for (let i = 0; i < nodesList.length; i++) {
           const node = nodesList[i];
 
-          // Handle Lines
           ctx.beginPath();
-          ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
           ctx.lineWidth = 1;
           ctx.setLineDash([3, 3]);
           ctx.moveTo(node.h1x, node.h1y);
@@ -185,14 +186,12 @@ export function CreativeStudioBackground() {
           ctx.stroke();
           ctx.setLineDash([]);
 
-          // Handle Points
           ctx.beginPath();
           ctx.fillStyle = "#ef4444";
-          ctx.arc(node.h1x, node.h1y, 3.5, 0, Math.PI * 2);
-          ctx.arc(node.h2x, node.h2y, 3.5, 0, Math.PI * 2);
+          ctx.arc(node.h1x, node.h1y, 3, 0, Math.PI * 2);
+          ctx.arc(node.h2x, node.h2y, 3, 0, Math.PI * 2);
           ctx.fill();
 
-          // Anchor Knot
           ctx.fillStyle = "#ffffff";
           ctx.strokeStyle = "#dc2626";
           ctx.lineWidth = 1.5;
@@ -200,36 +199,29 @@ export function CreativeStudioBackground() {
           ctx.strokeRect(node.x - 4, node.y - 4, 8, 8);
         }
 
-        // Draw Active Pen Nib at Knot
+        // Active Drawing Pen Nib
         const leadNode = nodesList[Math.floor((time * 0.008) % nodesList.length)];
         if (leadNode) {
           ctx.save();
           ctx.translate(leadNode.x, leadNode.y);
-          ctx.rotate(Math.sin(time * 0.04) * 0.35);
+          ctx.rotate(Math.sin(time * 0.04) * 0.3);
 
           ctx.beginPath();
           ctx.fillStyle = "#18181b";
           ctx.strokeStyle = "#ef4444";
-          ctx.lineWidth = 1.8;
+          ctx.lineWidth = 1.5;
           ctx.moveTo(0, 0);
-          ctx.lineTo(-10, -18);
-          ctx.lineTo(-5, -24);
-          ctx.lineTo(5, -24);
-          ctx.lineTo(10, -18);
+          ctx.lineTo(-8, -15);
+          ctx.lineTo(-4, -20);
+          ctx.lineTo(4, -20);
+          ctx.lineTo(8, -15);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
           ctx.beginPath();
-          ctx.strokeStyle = "#ffffff";
-          ctx.lineWidth = 1.2;
-          ctx.moveTo(0, 0);
-          ctx.lineTo(0, -14);
-          ctx.stroke();
-
-          ctx.beginPath();
           ctx.fillStyle = "#ef4444";
-          ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+          ctx.arc(0, 0, 2, 0, Math.PI * 2);
           ctx.fill();
 
           ctx.restore();
@@ -237,9 +229,11 @@ export function CreativeStudioBackground() {
       };
 
       drawBezierCurve(curve1, true);
-      drawBezierCurve(curve2, false);
+      if (!isMobile) {
+        drawBezierCurve(curve2, false);
+      }
 
-      // --- C. Draw Floating Particles ---
+      // --- C. Floating Particles ---
       inkDroplets.forEach((drop) => {
         drop.y += drop.vy;
         drop.x += drop.vx;

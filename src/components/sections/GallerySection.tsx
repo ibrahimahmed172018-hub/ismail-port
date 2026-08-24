@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Paintbrush, ArrowUpRight, MessageSquare, Maximize2, X, FileText, Download, BookOpen, Eye, ChevronDown } from "lucide-react";
+import { Sparkles, Paintbrush, ArrowUpRight, MessageSquare, Maximize2, X, FileText, BookOpen, Eye, ChevronDown } from "lucide-react";
 import { ISMAIL_DATA, CategoryPortfolio } from "@/data/portfolio";
 import { BrushDustRevealImage } from "@/components/interactive/BrushDustRevealImage";
 import { PdfViewerModal } from "@/components/interactive/PdfViewerModal";
@@ -13,14 +13,22 @@ export function GallerySection() {
   const [wipeTrigger, setWipeTrigger] = useState<number>(0);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [isPdfOpen, setIsPdfOpen] = useState<boolean>(false);
-  const [visibleCount, setVisibleCount] = useState<number>(12);
+  const [visibleCount, setVisibleCount] = useState<number>(6);
+
+  useEffect(() => {
+    // Set initial batch based on device screen size
+    if (typeof window !== "undefined" && window.innerWidth >= 768) {
+      setVisibleCount(12);
+    }
+  }, []);
 
   const activeCategory: CategoryPortfolio =
     ISMAIL_DATA.categories.find((c) => c.key === selectedKey) || ISMAIL_DATA.categories[0];
 
   const handleCategorySelect = (key: string) => {
     setSelectedKey(key);
-    setVisibleCount(12);
+    const initialBatch = typeof window !== "undefined" && window.innerWidth < 768 ? 6 : 12;
+    setVisibleCount(initialBatch);
     setWipeTrigger((prev) => prev + 1);
   };
 
@@ -72,7 +80,7 @@ export function GallerySection() {
               <button
                 key={cat.key}
                 onClick={() => handleCategorySelect(cat.key)}
-                className={`px-7 py-4 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all duration-300 flex flex-col items-center gap-0.5 ${
+                className={`px-6 sm:px-7 py-3.5 sm:py-4 rounded-2xl text-xs font-bold uppercase tracking-wider transition-all duration-300 flex flex-col items-center gap-0.5 ${
                   isActive
                     ? "bg-red-600 text-white shadow-[0_0_30px_rgba(220,38,38,0.6)] scale-105"
                     : "bg-zinc-900/90 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-white/10"
@@ -131,7 +139,7 @@ export function GallerySection() {
           key={`${selectedKey}-${wipeTrigger}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
           className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5"
         >
           {/* 1. Featured Interactive PDF Document Card */}
@@ -183,12 +191,12 @@ export function GallerySection() {
               onClick={() => setLightboxImage(imgUrl)}
               className="break-inside-avoid group relative rounded-2xl overflow-hidden border border-white/10 hover:border-red-500/60 bg-zinc-950 shadow-xl cursor-pointer transition-all duration-500 hover:shadow-[0_0_35px_rgba(220,38,38,0.3)]"
             >
-              <div className="relative w-full aspect-[4/3] sm:aspect-auto min-h-[260px] bg-black">
+              <div className="relative w-full aspect-[4/3] sm:aspect-auto min-h-[240px] sm:min-h-[260px] bg-black">
                 <BrushDustRevealImage
                   src={imgUrl}
                   alt={`${activeCategory.title} piece ${index + 1}`}
-                  className="w-full h-auto min-h-[260px]"
-                  delay={(index % 4) * 0.08}
+                  className="w-full h-auto min-h-[240px] sm:min-h-[260px]"
+                  delay={(index % 4) * 0.05}
                   triggerKey={`${selectedKey}-${wipeTrigger}`}
                 />
 
@@ -208,7 +216,7 @@ export function GallerySection() {
           ))}
         </motion.div>
 
-        {/* Load More Button if category has more than 12 images */}
+        {/* Load More Button */}
         {hasMore && (
           <div className="flex justify-center pt-6">
             <button
@@ -240,7 +248,7 @@ export function GallerySection() {
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
               className="relative max-w-4xl max-h-[84vh] w-full bg-zinc-950 border border-white/20 rounded-3xl overflow-hidden z-20 flex flex-col items-center justify-between shadow-[0_0_80px_rgba(220,38,38,0.3)] my-auto"
             >
               {/* Top Bar */}
@@ -267,6 +275,7 @@ export function GallerySection() {
                   src={lightboxImage}
                   alt="High-resolution artwork"
                   fill
+                  sizes="(max-width: 768px) 100vw, 800px"
                   className="object-contain select-none"
                   priority
                 />
