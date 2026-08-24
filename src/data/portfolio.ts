@@ -1,6 +1,3 @@
-export const SUPABASE_STORAGE_BASE =
-  "https://hfsjztcdyxmnuuufsdzi.supabase.co/storage/v1/object/public/ismail-portfolio";
-
 export interface ProjectItem {
   id: string;
   title: string;
@@ -31,9 +28,9 @@ export const ISMAIL_DATA = {
     shortName: "Ismail Mohamed",
     nameAr: "إسماعيل محمد",
     cvFullName: "Esmail Mohammed Abdeldaim",
-    heroImage: `${SUPABASE_STORAGE_BASE}/ismail_hero.jpg`,
-    avatar: `${SUPABASE_STORAGE_BASE}/ismail_hero.jpg`,
-    cvUrl: `${SUPABASE_STORAGE_BASE}/cv.pdf`,
+    heroImage: "/gallery/ismail_hero.webp",
+    avatar: "/gallery/ismail_hero.webp",
+    cvUrl: "/gallery/cv.pdf",
     jobTitle: "Senior Graphic Designer | Multimedia & Creative Designer | Video Editor",
     secondaryTitle: "Digital Marketing Specialist • Founder & Creative Director",
     agency: "Retina Creative Agency",
@@ -90,7 +87,7 @@ export const ISMAIL_DATA = {
     }
   ],
 
-  // Real Service Categories & Galleries from Supabase Storage CDN
+  // Real Service Categories & Ultra-Fast WebP Galleries
   categories: [
     {
       key: "branding-identity",
@@ -100,16 +97,16 @@ export const ISMAIL_DATA = {
       desc: "هويات بصرية كاملة، تصميم شعارات دقيقة هندسياً، أدلة استخدام العلامة التجارية، وتطبيقات المطبوعات والتغليف الفاخرة.",
       message: "مرحباً إسماعيل، أنا مهتم بخدمة تصميم الهوية البصرية والشعارات (Branding & Identity) وأود مناقشة تفاصيل مشروع معكم.",
       icon: "Layers",
-      pdfAttachment: `${SUPABASE_STORAGE_BASE}/branding-identity/Logo%20Design%20Process.pdf`,
+      pdfAttachment: "/gallery/branding/Logo-Design-Process.pdf",
       images: [
-        `${SUPABASE_STORAGE_BASE}/branding-identity/cover.jpg`,
-        `${SUPABASE_STORAGE_BASE}/branding-identity/identity-showcase.jpg`,
-        `${SUPABASE_STORAGE_BASE}/branding-identity/8.jpg`,
-        `${SUPABASE_STORAGE_BASE}/branding-identity/456.jpg`,
-        `${SUPABASE_STORAGE_BASE}/branding-identity/54615.jpg`,
-        `${SUPABASE_STORAGE_BASE}/branding-identity/556.jpg`,
-        `${SUPABASE_STORAGE_BASE}/branding-identity/profile-identity.jpg`,
-        `${SUPABASE_STORAGE_BASE}/branding-identity/brand-concept.png`
+        "/gallery/branding/cover.webp",
+        "/gallery/branding/identity-showcase.webp",
+        "/gallery/branding/8.webp",
+        "/gallery/branding/456.webp",
+        "/gallery/branding/54615.webp",
+        "/gallery/branding/556.webp",
+        "/gallery/branding/profile-identity.webp",
+        "/gallery/branding/brand-concept.webp"
       ]
     },
     {
@@ -122,7 +119,7 @@ export const ISMAIL_DATA = {
       icon: "TrendingUp",
       images: Array.from({ length: 23 }, (_, i) => {
         const num = (i + 1).toString().padStart(2, "0");
-        return `${SUPABASE_STORAGE_BASE}/social-media-designs/social-${num}.jpg`;
+        return `/gallery/social/social-${num}.webp`;
       })
     },
     {
@@ -135,7 +132,7 @@ export const ISMAIL_DATA = {
       icon: "Package",
       images: Array.from({ length: 41 }, (_, i) => {
         const num = (i + 1).toString().padStart(2, "0");
-        return `${SUPABASE_STORAGE_BASE}/packaging-print/print-${num}.jpg`;
+        return `/gallery/print/print-${num}.webp`;
       })
     }
   ] as CategoryPortfolio[],
