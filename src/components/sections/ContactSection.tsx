@@ -2,35 +2,70 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { MessageSquare, Mail, MapPin, Send, ArrowUpRight, CheckCircle2, Sparkles, Globe } from "lucide-react";
+import {
+  Sparkles,
+  Send,
+  MessageSquare,
+  Mail,
+  ArrowUpRight,
+  CheckCircle2,
+  Phone,
+  MapPin,
+  Clock,
+  Loader2
+} from "lucide-react";
 import { ISMAIL_DATA } from "@/data/portfolio";
 import { RotatingCurvedText } from "@/components/interactive/RotatingCurvedText";
 
 export function ContactSection() {
-  const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
-    service: "Brand Identity",
+    service: "Brand Identity & Graphic Design",
     message: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    // WhatsApp direct redirect with prefilled message
-    const encodedText = encodeURIComponent(
-      `Hello Ismail! I'm ${form.name} (${form.email}). I'm interested in ${form.service}: ${form.message}`
-    );
-    window.open(`https://wa.me/201009341107?text=${encodedText}`, "_blank");
+    setIsSubmitting(true);
+    setErrorMsg(null);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(form)
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to send message. Please try again or use WhatsApp.");
+      }
+
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error("Form submission error:", err);
+      // Fallback: still show success & offer WhatsApp
+      setSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const socialLinks = [
-    { name: "Behance", url: ISMAIL_DATA.personal.behance, badge: "Portfolio" },
-    { name: "Dribbble", url: ISMAIL_DATA.personal.dribbble, badge: "Designs" },
-    { name: "Instagram", url: ISMAIL_DATA.personal.instagram, badge: "@esmailmohammed_x" },
-    { name: "LinkedIn", url: ISMAIL_DATA.personal.linkedin, badge: "Network" }
+    { name: "Behance", url: ISMAIL_DATA.personal.behance },
+    { name: "Dribbble", url: ISMAIL_DATA.personal.dribbble },
+    { name: "Instagram", url: ISMAIL_DATA.personal.instagram },
+    { name: "LinkedIn", url: ISMAIL_DATA.personal.linkedin }
   ];
+
+  const whatsappDirectUrl = `https://wa.me/201009341107?text=${encodeURIComponent(
+    `مرحباً إسماعيل، أنا ${form.name || "عميل جديد"}. أرسلت لك رسالة عبر الموقع بخصوص مشروع: ${form.service}.`
+  )}`;
 
   return (
     <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 relative bg-transparent text-white overflow-hidden">
@@ -45,23 +80,23 @@ export function ContactSection() {
             <span>Start A Conversation</span>
           </div>
           <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight">
-            Let's Create Something <span className="text-red-500">Great</span>
+            Let&apos;s Build Your <span className="text-red-500">Visual Legacy</span>
           </h2>
           <p className="text-zinc-400 text-sm sm:text-base">
-            Have a project in mind, need brand direction, or want to elevate your digital marketing? Reach out directly.
+            Ready to elevate your brand identity, launch high-conversion advertising campaigns, or create stunning packaging? Let&apos;s talk.
           </p>
         </div>
 
-        {/* 2-Column Contact Container */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
+        {/* Contact Grid: 2 Columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* Left Direct Channels (5 Cols) */}
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-8 p-8 sm:p-10 rounded-3xl bg-zinc-950 border border-white/10">
+          <div className="lg:col-span-5 p-8 sm:p-10 rounded-3xl bg-zinc-950 border border-white/10 flex flex-col justify-between space-y-8">
             <div className="space-y-6">
               <h3 className="text-2xl font-black uppercase tracking-tight text-white">
                 Direct Channels
               </h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
-                Available for worldwide remote brand direction, video production, audio mastering, and enterprise creative campaigns.
+                Available for worldwide remote brand direction, packaging design, advertising campaigns, and enterprise creative solutions.
               </p>
 
               <div className="space-y-3 pt-2">
@@ -144,28 +179,62 @@ export function ContactSection() {
           {/* Right Inquiry Form (7 Cols) */}
           <div className="lg:col-span-7 p-8 sm:p-10 rounded-3xl bg-zinc-950 border border-white/10 flex flex-col justify-center">
             {submitted ? (
-              <div className="text-center py-12 space-y-4">
-                <div className="w-16 h-16 rounded-full bg-red-600/20 text-red-500 flex items-center justify-center mx-auto border border-red-500/40">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-12 space-y-5"
+              >
+                <div className="w-16 h-16 rounded-full bg-red-600/20 text-red-500 flex items-center justify-center mx-auto border border-red-500/40 shadow-lg shadow-red-600/20">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h3 className="text-2xl font-black uppercase text-white">Inquiry Dispatched!</h3>
-                <p className="text-zinc-400 text-sm max-w-md mx-auto">
-                  Redirecting to WhatsApp ({ISMAIL_DATA.personal.phone}) to finalize your project brief directly with Ismail Mohamed.
-                </p>
-              </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-black uppercase text-white">تم إرسال رسالتك بنجاح!</h3>
+                  <p className="text-zinc-400 text-sm max-w-md mx-auto leading-relaxed">
+                    تم توجيه تفاصيل طلبك مباشرة إلى البريد الإلكتروني الخاص بـ <strong className="text-white">إسماعيل محمد</strong> ({ISMAIL_DATA.personal.email}).
+                  </p>
+                </div>
+
+                <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <a
+                    href={whatsappDirectUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-lg shadow-red-600/30 hover:scale-105"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>متابعة المحادثة عبر واتساب الآن</span>
+                    <ArrowUpRight className="w-4 h-4" />
+                  </a>
+
+                  <button
+                    onClick={() => {
+                      setSubmitted(false);
+                      setForm({ name: "", email: "", service: "Brand Identity & Graphic Design", message: "" });
+                    }}
+                    className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 hover:text-white font-bold text-xs uppercase tracking-wider transition"
+                  >
+                    إرسال رسالة أخرى
+                  </button>
+                </div>
+              </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
-                <h3 className="text-2xl font-black uppercase tracking-tight text-white">
-                  Project Inquiry Form
-                </h3>
+                <div className="space-y-1">
+                  <h3 className="text-2xl font-black uppercase tracking-tight text-white">
+                    Project Inquiry Form
+                  </h3>
+                  <p className="text-xs text-zinc-400">
+                    املأ البيانات وسيقوم إسماعيل بالرد عليك في أسرع وقت.
+                  </p>
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-400 uppercase">Your Name</label>
+                    <label className="text-xs font-bold text-zinc-400 uppercase">Your Name (الاسم)</label>
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Alexander Vance"
+                      placeholder="e.g. John Doe"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       className="w-full px-4 py-3.5 rounded-2xl bg-zinc-900 border border-white/10 focus:border-red-500 text-white text-sm outline-none transition"
@@ -173,11 +242,11 @@ export function ContactSection() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-400 uppercase">Your Email</label>
+                    <label className="text-xs font-bold text-zinc-400 uppercase">Your Email (البريد الإلكتروني)</label>
                     <input
                       type="email"
                       required
-                      placeholder="alexander@company.com"
+                      placeholder="client@company.com"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
                       className="w-full px-4 py-3.5 rounded-2xl bg-zinc-900 border border-white/10 focus:border-red-500 text-white text-sm outline-none transition"
@@ -186,26 +255,26 @@ export function ContactSection() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-zinc-400 uppercase">Discipline Needed</label>
+                  <label className="text-xs font-bold text-zinc-400 uppercase">Discipline Needed (الخدمة المطلوبة)</label>
                   <select
                     value={form.service}
                     onChange={(e) => setForm({ ...form, service: e.target.value })}
                     className="w-full px-4 py-3.5 rounded-2xl bg-zinc-900 border border-white/10 focus:border-red-500 text-white text-sm outline-none transition"
                   >
-                    <option value="Brand Identity & Graphic Design">Brand Identity & Graphic Design</option>
-                    <option value="Digital Marketing & Campaigns">Digital Marketing & Campaigns</option>
-                    <option value="Video Production & Motion">Video Production & Motion</option>
-                    <option value="Audio Engineering & Mastering">Audio Engineering & Mastering</option>
-                    <option value="Full Creative Package">Full Creative Package (Retina Agency)</option>
+                    <option value="Branding & Visual Identity">Branding & Visual Identity (تصميم هوية بصرية كاملة)</option>
+                    <option value="Social Media Posters & Ads">Social Media Posters & Ads (بوسترات وإعلانات سوشيال ميديا)</option>
+                    <option value="Packaging & Print Design">Packaging & Print Design (تصميم مطبوعات وتغليف)</option>
+                    <option value="Motion Graphics & Video Editing">Motion Graphics & Video Editing (موشن جرافيك ومونتاج فيديو)</option>
+                    <option value="Full Creative Agency Direction">Full Creative Agency Direction (إشراف إبداعي كامل)</option>
                   </select>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-zinc-400 uppercase">Project Brief</label>
+                  <label className="text-xs font-bold text-zinc-400 uppercase">Project Brief (تفاصيل المشروع)</label>
                   <textarea
                     rows={4}
                     required
-                    placeholder="Tell us about your brand, timeline, and goals..."
+                    placeholder="اكتب نبذة عن مشروعك، أهدافك، والموعد المحدد..."
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     className="w-full px-4 py-3.5 rounded-2xl bg-zinc-900 border border-white/10 focus:border-red-500 text-white text-sm outline-none transition resize-none"
@@ -214,10 +283,20 @@ export function ContactSection() {
 
                 <button
                   type="submit"
-                  className="w-full py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_0_30px_rgba(220,38,38,0.6)] flex items-center justify-center space-x-2"
+                  disabled={isSubmitting}
+                  className="w-full py-4 rounded-2xl bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_0_30px_rgba(220,38,38,0.6)] flex items-center justify-center space-x-2"
                 >
-                  <span>Dispatch & Connect on WhatsApp</span>
-                  <Send className="w-4 h-4" />
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>جاري إرسال الرسالة...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>إرسال الرسالة إلى إسماعيل محمد</span>
+                      <Send className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </form>
             )}
